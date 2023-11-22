@@ -13,7 +13,8 @@
           "BepInEx.Core": "5.4.21",
           "BepInEx.PluginInfoProps": "2.1.0",
           "UnityEngine.Modules": "2022.3.9",
-          "Assembly-CSharp": "0.0.0.0"
+          "Assembly-CSharp": "0.0.0.0",
+          "Unity.Netcode.Runtime": "0.0.0.0"
         },
         "runtime": {
           "AlwaysHearWalkie.dll": {}

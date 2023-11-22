@@ -2689,11 +2689,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\LethalCompanyModding\\MODS\\MyFirstMod\\AlwaysHearWalkie.csproj",
+      "projectUniqueName": "D:\\LethalCompanyModding\\MODS\\AlwaysHearWalkie\\AlwaysHearWalkie.csproj",
       "projectName": "AlwaysHearWalkie",
-      "projectPath": "D:\\LethalCompanyModding\\MODS\\MyFirstMod\\AlwaysHearWalkie.csproj",
+      "projectPath": "D:\\LethalCompanyModding\\MODS\\AlwaysHearWalkie\\AlwaysHearWalkie.csproj",
       "packagesPath": "C:\\Users\\n33kos\\.nuget\\packages\\",
-      "outputPath": "D:\\LethalCompanyModding\\MODS\\MyFirstMod\\obj\\",
+      "outputPath": "D:\\LethalCompanyModding\\MODS\\AlwaysHearWalkie\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\n33kos\\AppData\\Roaming\\NuGet\\NuGet.Config",

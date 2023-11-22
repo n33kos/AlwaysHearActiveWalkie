@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rdWttXMrGSJ54vVhtAVQSbxmYFEpj7OzKkw9gHPCaV6L7Ue7a0b27qCDSy89JnoQzW72C7acmkb1wA4/6rA0pA==",
+  "dgSpecHash": "i8gIaReifDCh6KbSWzAf5AQM2ZBxe7dbhXaINcxUb0xeEIdt1Ochdz8iq1WGzbAkEZ9qsix6JcqZFuQKupxT4Q==",
   "success": true,
-  "projectFilePath": "D:\\LethalCompanyModding\\MODS\\MyFirstMod\\AlwaysHearWalkie.csproj",
+  "projectFilePath": "D:\\LethalCompanyModding\\MODS\\AlwaysHearWalkie\\AlwaysHearWalkie.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\n33kos\\.nuget\\packages\\bepinex.analyzers\\1.0.8\\bepinex.analyzers.1.0.8.nupkg.sha512",
     "C:\\Users\\n33kos\\.nuget\\packages\\bepinex.baselib\\5.4.20\\bepinex.baselib.5.4.20.nupkg.sha512",

@@ -40,4 +40,9 @@
             <HintPath>e:\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
     </ItemGroup>
+    <ItemGroup>
+        <Reference Include="Unity.Netcode.Runtime">
+            <HintPath>e:\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Unity.Netcode.Runtime.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 </Project>
