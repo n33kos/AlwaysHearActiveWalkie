@@ -1,0 +1,9 @@
+{
+    "name": "AlwaysHearActiveWalkies",
+    "version_number": "1.0.0",
+    "website_url": "",
+    "description": "Allows you to hear active walkies even when you're not holding them.",
+    "dependencies": [
+      "BepInEx-BepInExPack-5.4.2100"
+    ]
+}

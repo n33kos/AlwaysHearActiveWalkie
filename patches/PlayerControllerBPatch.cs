@@ -9,28 +9,28 @@ namespace LCAlwaysHearWalkieMod.Patches
   {
     private static float AudibleDistance = 15f;
 
-    // Adds a postfix to the PlayerIsHearingOthersThroughWalkieTalkie method which returns true if the
-    // player is within range of a walkie talkie that is being used.
-    [HarmonyPatch("PlayerIsHearingOthersThroughWalkieTalkie")]
+
+    [HarmonyPatch("Update")]
     [HarmonyPostfix]
-    static bool alwaysHearWalkieTalkiesPatch(bool result, ref PlayerControllerB __instance)
+    static void alwaysHearWalkieTalkiesPatch(ref bool ___holdingWalkieTalkie, ref PlayerControllerB __instance)
     {
-      if (result == true) return true;
+      if (__instance == null) return;
+
+      
+      bool isNearActiveWalkieTalkie = false;
 
       for (int i = 0; i < WalkieTalkie.allWalkieTalkies.Count; i++)
       {
         float distance = Vector3.Distance(WalkieTalkie.allWalkieTalkies[i].transform.position, __instance.transform.position);
 
-        if (
-          WalkieTalkie.allWalkieTalkies[i].isBeingUsed &&
-          distance <= AudibleDistance
-        )
-        {
-          return true;
+        if (WalkieTalkie.allWalkieTalkies[i].isBeingUsed && distance <= AudibleDistance)
+        { 
+          isNearActiveWalkieTalkie = true;
+          break;
         }
       }
 
-      return false;
+      ___holdingWalkieTalkie = isNearActiveWalkieTalkie;
     }
   }
 }
