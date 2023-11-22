@@ -1,0 +1,11 @@
+D:\LethalCompanyModding\MODS\MyFirstMod\obj\Debug\netstandard2.1\MyFirstMod.csproj.AssemblyReference.cache
+D:\LethalCompanyModding\MODS\MyFirstMod\obj\Debug\netstandard2.1\MyPluginInfo.cs
+D:\LethalCompanyModding\MODS\MyFirstMod\obj\Debug\netstandard2.1\MyFirstMod.GeneratedMSBuildEditorConfig.editorconfig
+D:\LethalCompanyModding\MODS\MyFirstMod\obj\Debug\netstandard2.1\MyFirstMod.AssemblyInfoInputs.cache
+D:\LethalCompanyModding\MODS\MyFirstMod\obj\Debug\netstandard2.1\MyFirstMod.AssemblyInfo.cs
+D:\LethalCompanyModding\MODS\MyFirstMod\obj\Debug\netstandard2.1\MyFirstMod.csproj.CoreCompileInputs.cache
+D:\LethalCompanyModding\MODS\MyFirstMod\bin\Debug\netstandard2.1\MyFirstMod.deps.json
+D:\LethalCompanyModding\MODS\MyFirstMod\bin\Debug\netstandard2.1\MyFirstMod.dll
+D:\LethalCompanyModding\MODS\MyFirstMod\bin\Debug\netstandard2.1\MyFirstMod.pdb
+D:\LethalCompanyModding\MODS\MyFirstMod\obj\Debug\netstandard2.1\MyFirstMod.dll
+D:\LethalCompanyModding\MODS\MyFirstMod\obj\Debug\netstandard2.1\MyFirstMod.pdb

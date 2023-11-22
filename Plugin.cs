@@ -1,16 +1,30 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
+using HarmonyLib;
+using LCAlwaysHearWalkieMod.Patches;
 
-namespace BepInEx5.PluginTemplate;
-
-[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-public class Plugin : BaseUnityPlugin
+namespace BepInEx5.PluginTemplate
 {
-    internal static new ManualLogSource Logger;
-        
-    private void Awake()
+    [BepInPlugin(modGUID, modName, modVersion)]
+    public class LCAlwaysHearWalkieMod : BaseUnityPlugin
     {
-        // Plugin startup logic
-        this.Logger = Logger;
-        Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+        public static ManualLogSource Log;
+        private const string modGUID = "n33kos.LCAlwaysHearWalkie";
+        private const string modName = "LC Always Hear Walkie";
+        private const string modVersion = "1.0.0";
+        private readonly Harmony harmony = new Harmony(modGUID);
+        private static LCAlwaysHearWalkieMod Instance;
+
+        private void Awake()
+        {
+            if (Instance == null) {
+                Instance = this;
+            }
+            Log = BepInEx.Logging.Logger.CreateLogSource(modGUID);
+            Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+
+            harmony.PatchAll(typeof(LCAlwaysHearWalkieMod));
+            harmony.PatchAll(typeof(PlayerControllerBPatch));
+        }
     }
 }
