@@ -4,6 +4,6 @@ namespace BepInEx5.PluginTemplate
     {
         public const string PLUGIN_GUID = "AlwaysHearWalkie";
         public const string PLUGIN_NAME = "My first plugin";
-        public const string PLUGIN_VERSION = "1.0.0";
+        public const string PLUGIN_VERSION = "1.1.0";
     }
 }
