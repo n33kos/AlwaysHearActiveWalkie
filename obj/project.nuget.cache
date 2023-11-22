@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "dgSpecHash": "Uy4eQADGSzAGOaJXl7+8r+bSg+fxVqCLAL2kIO4HPNICOwAmvANKIRbBMugK1ArQ973VxipkQbG6tv6x76bKdQ==",
+  "success": true,
+  "projectFilePath": "D:\\LethalCompanyModding\\MODS\\MyFirstMod\\BepInEx5.PluginTemplate.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\n33kos\\.nuget\\packages\\bepinex.analyzers\\1.0.8\\bepinex.analyzers.1.0.8.nupkg.sha512",
+    "C:\\Users\\n33kos\\.nuget\\packages\\bepinex.baselib\\5.4.20\\bepinex.baselib.5.4.20.nupkg.sha512",
+    "C:\\Users\\n33kos\\.nuget\\packages\\bepinex.core\\5.4.21\\bepinex.core.5.4.21.nupkg.sha512",
+    "C:\\Users\\n33kos\\.nuget\\packages\\bepinex.plugininfoprops\\2.1.0\\bepinex.plugininfoprops.2.1.0.nupkg.sha512",
+    "C:\\Users\\n33kos\\.nuget\\packages\\harmonyx\\2.7.0\\harmonyx.2.7.0.nupkg.sha512",
+    "C:\\Users\\n33kos\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.2\\microsoft.netframework.referenceassemblies.1.0.2.nupkg.sha512",
+    "C:\\Users\\n33kos\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net35\\1.0.2\\microsoft.netframework.referenceassemblies.net35.1.0.2.nupkg.sha512",
+    "C:\\Users\\n33kos\\.nuget\\packages\\mono.cecil\\0.10.4\\mono.cecil.0.10.4.nupkg.sha512",
+    "C:\\Users\\n33kos\\.nuget\\packages\\monomod.runtimedetour\\21.12.13.1\\monomod.runtimedetour.21.12.13.1.nupkg.sha512",
+    "C:\\Users\\n33kos\\.nuget\\packages\\monomod.utils\\21.12.13.1\\monomod.utils.21.12.13.1.nupkg.sha512",
+    "C:\\Users\\n33kos\\.nuget\\packages\\unityengine.modules\\5.6.0\\unityengine.modules.5.6.0.nupkg.sha512"
+  ],
+  "logs": []
+}
