@@ -1,3 +1,6 @@
+# 1.3.0
+- Fix bug where dropping a walkie while someone is communicating cuts out audio
+
 # 1.2.0
 - Fix Walking in and out of walkie range during communication
 - ### Known Issues:

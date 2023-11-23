@@ -10,7 +10,9 @@ namespace LCAlwaysHearWalkieMod.Patches
   {
     private static float AudibleDistance = 15f;
 
-
+    // Set player `holdingWalkieTalkie` by distance to walkies and stop or start the walkie audio accordingly.
+    // This is inefficient because we are looping through all walkies every frame. Potential future optimization
+    // would be to only loop through walkies when the player moves or find another lower frequency loop to hook into.
     [HarmonyPatch("Update")]
     [HarmonyPostfix]
     static void alwaysHearWalkieTalkiesPatch(ref bool ___holdingWalkieTalkie, ref PlayerControllerB __instance)

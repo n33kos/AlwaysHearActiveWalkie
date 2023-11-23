@@ -7,7 +7,7 @@
   "targets": {
     ".NETStandard,Version=v2.1": {},
     ".NETStandard,Version=v2.1/": {
-      "AlwaysHearWalkie/1.2.0": {
+      "AlwaysHearWalkie/1.3.0": {
         "dependencies": {
           "BepInEx.Analyzers": "1.0.8",
           "BepInEx.Core": "5.4.21",
@@ -645,7 +645,7 @@
     }
   },
   "libraries": {
-    "AlwaysHearWalkie/1.2.0": {
+    "AlwaysHearWalkie/1.3.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

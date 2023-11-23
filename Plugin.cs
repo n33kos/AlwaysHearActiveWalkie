@@ -11,7 +11,7 @@ namespace BepInEx5.PluginTemplate
         public static ManualLogSource Log;
         private const string modGUID = "suskitech.LCAlwaysHearWalkie";
         private const string modName = "LC Always Hear Walkie";
-        private const string modVersion = "1.2.0";
+        private const string modVersion = "1.3.0";
         private readonly Harmony harmony = new Harmony(modGUID);
         private static LCAlwaysHearWalkieMod Instance;
 
@@ -25,6 +25,7 @@ namespace BepInEx5.PluginTemplate
 
             harmony.PatchAll(typeof(LCAlwaysHearWalkieMod));
             harmony.PatchAll(typeof(PlayerControllerBPatch));
+            harmony.PatchAll(typeof(WalkieTalkiePatch));
         }
     }
 }
