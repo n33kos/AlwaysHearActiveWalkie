@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GameNetcodeStuff;
 using HarmonyLib;
 using UnityEngine;
@@ -22,20 +23,36 @@ namespace LCAlwaysHearWalkieMod.Patches
         return;
       }
 
+      List<WalkieTalkie> walkieTalkiesInRange = new List<WalkieTalkie>();
+      List<WalkieTalkie> walkieTalkiesOutOfRange = new List<WalkieTalkie>();
       for (int i = 0; i < WalkieTalkie.allWalkieTalkies.Count; i++)
       {
         float distance = Vector3.Distance(WalkieTalkie.allWalkieTalkies[i].transform.position, __instance.transform.position);
 
-        if (WalkieTalkie.allWalkieTalkies[i].isBeingUsed && distance <= AudibleDistance)
+        if (distance <= AudibleDistance)
         {
-          ___holdingWalkieTalkie = true;
-          WalkieTalkie.allWalkieTalkies[i].thisAudio.Stop();
-          StartOfRound.Instance.UpdatePlayerVoiceEffects();
-          return;
+          if (WalkieTalkie.allWalkieTalkies[i].isBeingUsed) {
+            walkieTalkiesInRange.Add(WalkieTalkie.allWalkieTalkies[i]);
+          }
+        } else {
+          walkieTalkiesOutOfRange.Add(WalkieTalkie.allWalkieTalkies[i]);
         }
       }
 
-      ___holdingWalkieTalkie = false;
+      bool isAnyWalkieInRange = walkieTalkiesInRange.Count > 0;
+
+      if (isAnyWalkieInRange != __instance.holdingWalkieTalkie) {
+        ___holdingWalkieTalkie = isAnyWalkieInRange;
+          
+        for (int i = 0; i < walkieTalkiesOutOfRange.Count; i++)
+        {
+          walkieTalkiesInRange[i].thisAudio.Stop();
+        }
+
+        if (isAnyWalkieInRange) {
+          StartOfRound.Instance.UpdatePlayerVoiceEffects();
+        }
+      }
     }
   }
 }

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AlwaysHearWalkie")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.2.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.2.0+54e8a2cdecc54362dbc52526d9107bf877413172")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.2.0+5b5a72e2bf41cf75a0b2b094dbb068814fda1bb7")]
 [assembly: System.Reflection.AssemblyProductAttribute("My first plugin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AlwaysHearWalkie")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.2.0.0")]
