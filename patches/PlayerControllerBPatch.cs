@@ -15,22 +15,27 @@ namespace LCAlwaysHearWalkieMod.Patches
     static void alwaysHearWalkieTalkiesPatch(ref bool ___holdingWalkieTalkie, ref PlayerControllerB __instance)
     {
       if (__instance == null) return;
-
-      
-      bool isNearActiveWalkieTalkie = false;
+      if (__instance != GameNetworkManager.Instance.localPlayerController) {
+        return;
+      }
+      if (GameNetworkManager.Instance.localPlayerController.isPlayerDead) {
+        return;
+      }
 
       for (int i = 0; i < WalkieTalkie.allWalkieTalkies.Count; i++)
       {
         float distance = Vector3.Distance(WalkieTalkie.allWalkieTalkies[i].transform.position, __instance.transform.position);
 
         if (WalkieTalkie.allWalkieTalkies[i].isBeingUsed && distance <= AudibleDistance)
-        { 
-          isNearActiveWalkieTalkie = true;
-          break;
+        {
+          ___holdingWalkieTalkie = true;
+          WalkieTalkie.allWalkieTalkies[i].thisAudio.Stop();
+          StartOfRound.Instance.UpdatePlayerVoiceEffects();
+          return;
         }
       }
 
-      ___holdingWalkieTalkie = isNearActiveWalkieTalkie;
+      ___holdingWalkieTalkie = false;
     }
   }
 }

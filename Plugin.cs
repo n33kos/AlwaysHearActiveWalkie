@@ -9,9 +9,9 @@ namespace BepInEx5.PluginTemplate
     public class LCAlwaysHearWalkieMod : BaseUnityPlugin
     {
         public static ManualLogSource Log;
-        private const string modGUID = "n33kos.LCAlwaysHearWalkie";
+        private const string modGUID = "suskitech.LCAlwaysHearWalkie";
         private const string modName = "LC Always Hear Walkie";
-        private const string modVersion = "1.0.0";
+        private const string modVersion = "1.2.0";
         private readonly Harmony harmony = new Harmony(modGUID);
         private static LCAlwaysHearWalkieMod Instance;
 
