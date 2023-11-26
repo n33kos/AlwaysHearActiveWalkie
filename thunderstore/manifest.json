@@ -1,6 +1,6 @@
 {
     "name": "AlwaysHearActiveWalkies",
-    "version_number": "1.3.0",
+    "version_number": "1.4.0",
     "website_url": "",
     "description": "Allows you to hear active walkies even when you're not holding them.",
     "dependencies": [

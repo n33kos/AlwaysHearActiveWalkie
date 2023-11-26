@@ -2,8 +2,8 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
         <AssemblyName>AlwaysHearWalkie</AssemblyName>
-        <Product>My first plugin</Product>
-        <Version>1.3.0</Version>
+        <Product>Always Hear Active Walkies</Product>
+        <Version>1.4.0</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
         <RestoreAdditionalProjectSources>https://api.nuget.org/v3/index.json;
@@ -43,6 +43,11 @@
     <ItemGroup>
         <Reference Include="Unity.Netcode.Runtime">
             <HintPath>e:\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Unity.Netcode.Runtime.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="DissonanceVoip">
+            <HintPath>e:\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\DissonanceVoip.dll</HintPath>
         </Reference>
     </ItemGroup>
 </Project>

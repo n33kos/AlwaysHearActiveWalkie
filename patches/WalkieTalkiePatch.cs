@@ -8,10 +8,10 @@ namespace LCAlwaysHearWalkieMod.Patches
 
     [HarmonyPatch("EnableWalkieTalkieListening")]
     [HarmonyPrefix]
-    static bool alwaysHearWalkieTalkiesPatch(bool enable)
+    static bool alwaysHearWalkieTalkiesEnableWalkieTalkieListeningPatch(bool enable)
     {
-      // If we are disabling, skip the original function entirely. We dont want to set holdingWalkieTalkie to 
-      // false anymore because that is controlled by distance to walkies on the playerControllerB patch.
+      // If we are disabling Walkie talkie Listening, skip the original function entirely. We dont want to set holdingWalkieTalkie to 
+      // false anymore fromt his location because that is controlled by distance to walkies on the playerControllerB patch.
       // This is potentially dangerous because we are skipping the original function entirely. If the original
       // function changes in the future, we may need to update this patch.
       if (enable == false) {

@@ -1,5 +1,11 @@
+# 1.4.0
+- Reduce performance impact by throttling calculations on update loop
+- Fix bug causing audio range to cut off abruptly. It now should get quieter by distance from active walkie.
+
 # 1.3.0
 - Fix bug where dropping a walkie while someone is communicating cuts out audio
+- ### Known Issues:
+  - Exiting and entering the walkie range abruptly cuts out instead of lowering volume gradually
 
 # 1.2.0
 - Fix Walking in and out of walkie range during communication

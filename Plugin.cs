@@ -1,7 +1,9 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 using LCAlwaysHearWalkieMod.Patches;
+using UnityEngine.Scripting;
 
 namespace BepInEx5.PluginTemplate
 {
@@ -9,9 +11,9 @@ namespace BepInEx5.PluginTemplate
     public class LCAlwaysHearWalkieMod : BaseUnityPlugin
     {
         public static ManualLogSource Log;
-        private const string modGUID = "suskitech.LCAlwaysHearWalkie";
-        private const string modName = "LC Always Hear Walkie";
-        private const string modVersion = "1.3.0";
+        private const string modGUID = "suskitech.LCAlwaysHearActiveWalkie";
+        private const string modName = "LC Always Hear Active Walkies";
+        private const string modVersion = "1.4.0";
         private readonly Harmony harmony = new Harmony(modGUID);
         private static LCAlwaysHearWalkieMod Instance;
 
@@ -21,7 +23,13 @@ namespace BepInEx5.PluginTemplate
                 Instance = this;
             }
             Log = BepInEx.Logging.Logger.CreateLogSource(modGUID);
-            Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+            
+            Log.LogInfo("\\ /");
+            Log.LogInfo("/|\\");
+            Log.LogInfo(" |----|");
+            Log.LogInfo(" |[__]| Always Hear Active Walkies");
+           Log.LogInfo($" |.  .| Version {modVersion} Loaded");
+            Log.LogInfo(" |____|");
 
             harmony.PatchAll(typeof(LCAlwaysHearWalkieMod));
             harmony.PatchAll(typeof(PlayerControllerBPatch));
