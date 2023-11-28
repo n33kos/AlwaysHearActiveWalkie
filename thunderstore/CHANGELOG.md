@@ -1,3 +1,7 @@
+# 1.4.2
+- Add gihub repo
+- Update README
+
 # 1.4.1
 - Increase audible walkie distance upper range to 20f
 
