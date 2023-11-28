@@ -12,8 +12,8 @@ namespace LCAlwaysHearWalkieMod.Patches
     private static float throttleInterval = 0.4f;
     private static float throttle = 0f;
     private static float AverageDistanceToHeldWalkie = 2f;
-    private static float WalkieRecordingRange = 15f;
-    private static float PlayerToPlayerSpatialHearingRange = 15f;
+    private static float WalkieRecordingRange = 20f;
+    private static float PlayerToPlayerSpatialHearingRange = 20f;
 
     [HarmonyPatch("Update")]
     [HarmonyPostfix]

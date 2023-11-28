@@ -1,3 +1,6 @@
+# 1.4.1
+- Increase audible walkie distance upper range to 20f
+
 # 1.4.0
 - Reduce performance impact by throttling calculations on update loop
 - Fix bug causing audio range to cut off abruptly. It now should get quieter by distance from active walkie.
