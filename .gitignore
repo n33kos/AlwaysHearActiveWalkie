@@ -1,5 +1,6 @@
-# [Dd]ebug/
-# [Rr]elease/
-# x64/
-# [Bb]in/
-# [Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+[Bb]in/
+[Oo]bj/
+thunderstore/*.zip
