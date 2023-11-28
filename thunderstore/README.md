@@ -6,4 +6,5 @@ Now when you are exploring with someone who has a walkie you should be able to h
 
 It also allows you to hear active walkies on the floor which should give you a bit of an edge if the walkie-holder has just been face hugged.
 
-
+### Source
+https://github.com/n33kos/AlwaysHearActiveWalkie
