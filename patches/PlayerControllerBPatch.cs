@@ -5,154 +5,138 @@ using UnityEngine;
 
 namespace LCAlwaysHearWalkieMod.Patches
 {
-  [HarmonyPatch(typeof(PlayerControllerB))]
-  internal class PlayerControllerBPatch
-  {
-    private static float AudibleDistance = 20f;
-    private static float throttleInterval = 0.4f;
-    private static float throttle = 0f;
-    private static float AverageDistanceToHeldWalkie = 2f;
-    private static float WalkieRecordingRange = 20f;
-    private static float PlayerToPlayerSpatialHearingRange = 20f;
-
-    [HarmonyPatch("Update")]
-    [HarmonyPostfix]
-    static void alwaysHearWalkieTalkiesPatch(ref bool ___holdingWalkieTalkie, ref PlayerControllerB __instance)
+    [HarmonyPatch(typeof(PlayerControllerB))]
+    internal class PlayerControllerBPatch
     {
-      // Throttle calls to reduce performance impact
-      throttle += Time.deltaTime;
-      if (throttle < throttleInterval) {
-        return;
-      }
-      throttle = 0f;
+        private const float AudibleDistance = 20f;
+        private const float ThrottleInterval = 0.4f;
+        private const float AverageDistanceToHeldWalkie = 2f;
+        private const float WalkieRecordingRange = 20f;
+        private const float PlayerToPlayerSpatialHearingRange = 20f;
+        private static float throttle = 0f;
 
-      // Early returns
-      if (__instance == null) {
-        return;
-      }
-      if (GameNetworkManager.Instance == null)
-      {
-        return;
-      }
-      if (__instance != GameNetworkManager.Instance.localPlayerController) {
-        return;
-      }
-      if (GameNetworkManager.Instance.localPlayerController == null)
-      {
-        return;
-      }
-      if (GameNetworkManager.Instance.localPlayerController.isPlayerDead) {
-        return;
-      }
-
-      List<WalkieTalkie> walkieTalkiesInRange = new List<WalkieTalkie>();
-      List<WalkieTalkie> walkieTalkiesOutOfRange = new List<WalkieTalkie>();
-      for (int i = 0; i < WalkieTalkie.allWalkieTalkies.Count; i++)
-      {
-        float distance = Vector3.Distance(WalkieTalkie.allWalkieTalkies[i].transform.position, __instance.transform.position);
-
-        if (distance <= AudibleDistance)
+        [HarmonyPatch("Update")]
+        [HarmonyPostfix]
+        /// <summary>
+        /// Postfix for Update method of PlayerControllerB, which adjusts player's hearing ability based on walkie talkie range.
+        /// </summary>
+        static void AlwaysHearWalkieTalkiesPatch(ref bool ___holdingWalkieTalkie, ref PlayerControllerB __instance)
         {
-          if (WalkieTalkie.allWalkieTalkies[i].isBeingUsed) {
-            walkieTalkiesInRange.Add(WalkieTalkie.allWalkieTalkies[i]);
-          }
-        } else {
-          walkieTalkiesOutOfRange.Add(WalkieTalkie.allWalkieTalkies[i]);
-        }
-      }
+            if (!ShouldProcessUpdate(__instance)) return;
 
-      bool isAnyWalkieInRange = walkieTalkiesInRange.Count > 0;
+            throttle = 0f;
 
-      // If the player is going in or out of range of an active walkie
-      if (isAnyWalkieInRange != __instance.holdingWalkieTalkie) {
-        // Set the holdingWalkieTalkie bool to true if the player is within range of an active walkie
-        ___holdingWalkieTalkie = isAnyWalkieInRange;
-        
-        // Immediately stop audio from walkies that are out of range
-        for (int i = 0; i < walkieTalkiesOutOfRange.Count; i++)
-        {
-          if (i < walkieTalkiesInRange.Count) {
-            walkieTalkiesOutOfRange[i].thisAudio.Stop();
-          }
-        }
-      }
+            var walkieTalkiesInRange = new List<WalkieTalkie>();
+            var walkieTalkiesOutOfRange = new List<WalkieTalkie>();
 
-      // Return early if we are out of range of all active walkies
-      if (!isAnyWalkieInRange) {
-        return;
-      }
-
-      // Get the local player controller (or the spectated player controller) as the listener
-      PlayerControllerB localOrSpectatedPlayerController = (
-        !GameNetworkManager.Instance.localPlayerController.isPlayerDead
-        || !(GameNetworkManager.Instance.localPlayerController.spectatedPlayerScript != null)
-      )
-        ? GameNetworkManager.Instance.localPlayerController
-        : GameNetworkManager.Instance.localPlayerController.spectatedPlayerScript;
-
-      for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
-      {
-        // Return if the player is not controlled by a player or is dead or if its the local player controller
-        if (
-          (!StartOfRound.Instance.allPlayerScripts[i].isPlayerControlled && !StartOfRound.Instance.allPlayerScripts[i].isPlayerDead)
-          || StartOfRound.Instance.allPlayerScripts[i] == GameNetworkManager.Instance.localPlayerController
-          || StartOfRound.Instance.allPlayerScripts[i].isPlayerDead
-        )
-        {
-          continue;
-        }
-
-        PlayerControllerB otherPlayerController = StartOfRound.Instance.allPlayerScripts[i];
-
-        // In PlayerControllerBPatch we set the holdingWalkieTalkie bool to true if the player is within range of an active walkie instead of actively holding one
-        bool isOtherPlayerNearActiveWalkie = otherPlayerController.holdingWalkieTalkie;
-
-        if (isOtherPlayerNearActiveWalkie)
-        {
-          float distanceLocalPlayerToOtherPlayer = Vector3.Distance(localOrSpectatedPlayerController.transform.position, otherPlayerController.transform.position);
-          float distanceOtherPlayerToClosestWalkie = float.MaxValue;
-          float distanceLocalPlayerToClosestWalkie = float.MaxValue;
-
-          for (int j = 0; j < WalkieTalkie.allWalkieTalkies.Count; j++)
-          {
-            // If walkie talkie is not being used skip it.
-            if (!WalkieTalkie.allWalkieTalkies[j].isBeingUsed)
+            foreach (var walkieTalkie in WalkieTalkie.allWalkieTalkies)
             {
-              continue;
+                float distance = Vector3.Distance(walkieTalkie.transform.position, __instance.transform.position);
+                if (distance <= AudibleDistance && walkieTalkie.isBeingUsed)
+                {
+                    walkieTalkiesInRange.Add(walkieTalkie);
+                }
+                else
+                {
+                    walkieTalkiesOutOfRange.Add(walkieTalkie);
+                }
             }
 
-            // Get the distance from the local player to the closest active walkie
-            float distanceLocalToWalkie = Vector3.Distance(WalkieTalkie.allWalkieTalkies[j].target.transform.position, localOrSpectatedPlayerController.transform.position);
-            if (distanceLocalToWalkie < distanceLocalPlayerToClosestWalkie)
-            {
-              distanceLocalPlayerToClosestWalkie = distanceLocalToWalkie;
-            }
+            bool isAnyWalkieInRange = walkieTalkiesInRange.Count > 0;
+            ___holdingWalkieTalkie = isAnyWalkieInRange;
 
+            StopOutOfRangeWalkies(walkieTalkiesOutOfRange, walkieTalkiesInRange.Count);
 
-            // Only if walkie is being spoken into, get the distance from the other player to the closest active walkie
-            if (!WalkieTalkie.allWalkieTalkies[j].speakingIntoWalkieTalkie)
-            {
-              float distanceOtherToWalkie = Vector3.Distance(WalkieTalkie.allWalkieTalkies[j].transform.position, otherPlayerController.transform.position);
-              if (distanceOtherToWalkie < distanceOtherPlayerToClosestWalkie)
-              {
-                distanceOtherPlayerToClosestWalkie = distanceOtherToWalkie;
-              }
-            }
-          }
+            if (!isAnyWalkieInRange) return;
 
-          // Derive the volume for the other player based on the distance of both players to their closest active walkie
-          float playerVolumeByWalkieTalkieDistance = Mathf.Min(
-            1f - Mathf.InverseLerp(AverageDistanceToHeldWalkie, WalkieRecordingRange, distanceOtherPlayerToClosestWalkie),
-            1f - Mathf.InverseLerp(AverageDistanceToHeldWalkie, WalkieRecordingRange, distanceLocalPlayerToClosestWalkie)
-          );
-
-          // Derive the volume for the other player based on the distance of the local player to the other player
-          float playerVolumeBySpatialDistance = 1f - Mathf.InverseLerp(0f, PlayerToPlayerSpatialHearingRange, distanceLocalPlayerToOtherPlayer);
-
-          // Set the volume of the other player to the louder of the two volumes
-          otherPlayerController.voicePlayerState.Volume = Mathf.Max(playerVolumeByWalkieTalkieDistance, playerVolumeBySpatialDistance);
+            var localOrSpectatedPlayerController = GetLocalOrSpectatedPlayerController();
+            AdjustPlayerVolumes(localOrSpectatedPlayerController, walkieTalkiesInRange);
         }
-      }
+
+        /// <summary>
+        /// Determines if the Update method should proceed with its operations.
+        /// </summary>
+        private static bool ShouldProcessUpdate(PlayerControllerB __instance)
+        {
+            throttle += Time.deltaTime;
+            if (throttle < ThrottleInterval || __instance == null) return false;
+
+            var networkManager = GameNetworkManager.Instance;
+            if (networkManager == null || networkManager.localPlayerController == null ||
+                networkManager.localPlayerController.isPlayerDead ||
+                __instance != networkManager.localPlayerController) return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Stops audio from walkie talkies that are out of range.
+        /// </summary>
+        private static void StopOutOfRangeWalkies(List<WalkieTalkie> walkieTalkiesOutOfRange, int inRangeCount)
+        {
+            for (int i = 0; i < walkieTalkiesOutOfRange.Count; i++)
+            {
+                if (i < inRangeCount)
+                {
+                    walkieTalkiesOutOfRange[i].thisAudio.Stop();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the local player controller or the spectated player controller.
+        /// </summary>
+        private static PlayerControllerB GetLocalOrSpectatedPlayerController()
+        {
+            var localPlayerController = GameNetworkManager.Instance.localPlayerController;
+            return (!localPlayerController.isPlayerDead || localPlayerController.spectatedPlayerScript != null)
+                ? localPlayerController
+                : localPlayerController.spectatedPlayerScript;
+        }
+
+        /// <summary>
+        /// Adjusts the volume of other players based on their distance to the local or spectated player controller and active walkie talkies.
+        /// </summary>
+        private static void AdjustPlayerVolumes(PlayerControllerB localOrSpectatedPlayerController, List<WalkieTalkie> walkieTalkiesInRange)
+        {
+            foreach (var playerScript in StartOfRound.Instance.allPlayerScripts)
+            {
+                if (playerScript == localOrSpectatedPlayerController || playerScript.isPlayerDead || !playerScript.isPlayerControlled) continue;
+
+                if (playerScript.holdingWalkieTalkie)
+                {
+                    AdjustVolumeBasedOnDistance(playerScript, localOrSpectatedPlayerController, walkieTalkiesInRange);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adjusts the volume of a player based on their distance to walkie talkies and other players.
+        /// </summary>
+        private static void AdjustVolumeBasedOnDistance(PlayerControllerB otherPlayerController, PlayerControllerB localOrSpectatedPlayerController, List<WalkieTalkie> walkieTalkiesInRange)
+        {
+            float distanceLocalPlayerToOtherPlayer = Vector3.Distance(localOrSpectatedPlayerController.transform.position, otherPlayerController.transform.position);
+            float playerVolumeBySpatialDistance = 1f - Mathf.InverseLerp(0f, PlayerToPlayerSpatialHearingRange, distanceLocalPlayerToOtherPlayer);
+
+            float minDistanceOtherPlayerToWalkie = float.MaxValue;
+            float minDistanceLocalPlayerToWalkie = float.MaxValue;
+            foreach (var walkieTalkie in walkieTalkiesInRange)
+            {
+                if (!walkieTalkie.isBeingUsed) continue;
+
+                float distanceOtherToWalkie = Vector3.Distance(walkieTalkie.transform.position, otherPlayerController.transform.position);
+                minDistanceOtherPlayerToWalkie = Mathf.Min(minDistanceOtherPlayerToWalkie, distanceOtherToWalkie);
+
+                float distanceLocalToWalkie = Vector3.Distance(walkieTalkie.target.transform.position, localOrSpectatedPlayerController.transform.position);
+                minDistanceLocalPlayerToWalkie = Mathf.Min(minDistanceLocalPlayerToWalkie, distanceLocalToWalkie);
+            }
+
+            float playerVolumeByWalkieTalkieDistance = Mathf.Min(
+                1f - Mathf.InverseLerp(AverageDistanceToHeldWalkie, WalkieRecordingRange, minDistanceOtherPlayerToWalkie),
+                1f - Mathf.InverseLerp(AverageDistanceToHeldWalkie, WalkieRecordingRange, minDistanceLocalPlayerToWalkie)
+            );
+
+            otherPlayerController.voicePlayerState.Volume = Mathf.Max(playerVolumeByWalkieTalkieDistance, playerVolumeBySpatialDistance);
+        }
     }
-  }
 }
