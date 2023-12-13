@@ -51,6 +51,8 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Plugin));
         harmony.PatchAll(typeof(PlayerControllerBPatch));
         harmony.PatchAll(typeof(WalkieTalkiePatch));
+        harmony.PatchAll(typeof(StartOfRoundPatch));
+
 
         Log.LogInfo("\\ /");
         Log.LogInfo("/|\\");
