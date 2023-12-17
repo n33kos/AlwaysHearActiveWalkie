@@ -1,6 +1,17 @@
+# 1.4.3
+- Adjust player sound effects based on. louder of two audio "sources"
+  - This should result in only applying the walkie talkie sound effect to a player's voice if the walkie talkie sound would be louder than the spatial audio sound of the player.
+  - Fixes known issue in version 1.4.2
+- Lower `throttleInterval` to 0.35.
+  - This should result in a slightly faster response time adjusting other players' volume dynamically.
+- Update Icon
+- Automatically start app in .bat development script
+
 # 1.4.2
 - Add gihub repo
 - Update README
+- ### Known Issues:
+  - When talking into a walkie nearby other players, It sounds like the speaker is talking through the walkie even if a nearby player has no walkie talkie active.
 
 # 1.4.1
 - Increase audible walkie distance upper range to 20f

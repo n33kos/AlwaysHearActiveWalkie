@@ -13,7 +13,7 @@ namespace BepInEx5.PluginTemplate
         public static ManualLogSource Log;
         private const string modGUID = "suskitech.LCAlwaysHearActiveWalkie";
         private const string modName = "LC Always Hear Active Walkies";
-        private const string modVersion = "1.4.2";
+        private const string modVersion = "1.4.3";
         private readonly Harmony harmony = new Harmony(modGUID);
         private static LCAlwaysHearWalkieMod Instance;
 

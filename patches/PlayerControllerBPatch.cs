@@ -9,7 +9,7 @@ namespace LCAlwaysHearWalkieMod.Patches
   internal class PlayerControllerBPatch
   {
     private static float AudibleDistance = 20f;
-    private static float throttleInterval = 0.4f;
+    private static float throttleInterval = 0.35f;
     private static float throttle = 0f;
     private static float AverageDistanceToHeldWalkie = 2f;
     private static float WalkieRecordingRange = 20f;
@@ -41,45 +41,44 @@ namespace LCAlwaysHearWalkieMod.Patches
       {
         return;
       }
-      if (GameNetworkManager.Instance.localPlayerController.isPlayerDead) {
-        return;
-      }
 
-      List<WalkieTalkie> walkieTalkiesInRange = new List<WalkieTalkie>();
-      List<WalkieTalkie> walkieTalkiesOutOfRange = new List<WalkieTalkie>();
-      for (int i = 0; i < WalkieTalkie.allWalkieTalkies.Count; i++)
-      {
-        float distance = Vector3.Distance(WalkieTalkie.allWalkieTalkies[i].transform.position, __instance.transform.position);
-
-        if (distance <= AudibleDistance)
+      if (!GameNetworkManager.Instance.localPlayerController.isPlayerDead) {
+        List<WalkieTalkie> walkieTalkiesInRange = new List<WalkieTalkie>();
+        List<WalkieTalkie> walkieTalkiesOutOfRange = new List<WalkieTalkie>();
+        for (int i = 0; i < WalkieTalkie.allWalkieTalkies.Count; i++)
         {
-          if (WalkieTalkie.allWalkieTalkies[i].isBeingUsed) {
-            walkieTalkiesInRange.Add(WalkieTalkie.allWalkieTalkies[i]);
-          }
-        } else {
-          walkieTalkiesOutOfRange.Add(WalkieTalkie.allWalkieTalkies[i]);
-        }
-      }
+          float distance = Vector3.Distance(WalkieTalkie.allWalkieTalkies[i].transform.position, __instance.transform.position);
 
-      bool isAnyWalkieInRange = walkieTalkiesInRange.Count > 0;
-
-      // If the player is going in or out of range of an active walkie
-      if (isAnyWalkieInRange != __instance.holdingWalkieTalkie) {
-        // Set the holdingWalkieTalkie bool to true if the player is within range of an active walkie
-        ___holdingWalkieTalkie = isAnyWalkieInRange;
-        
-        // Immediately stop audio from walkies that are out of range
-        for (int i = 0; i < walkieTalkiesOutOfRange.Count; i++)
-        {
-          if (i < walkieTalkiesInRange.Count) {
-            walkieTalkiesOutOfRange[i].thisAudio.Stop();
+          if (distance <= AudibleDistance)
+          {
+            if (WalkieTalkie.allWalkieTalkies[i].isBeingUsed) {
+              walkieTalkiesInRange.Add(WalkieTalkie.allWalkieTalkies[i]);
+            }
+          } else {
+            walkieTalkiesOutOfRange.Add(WalkieTalkie.allWalkieTalkies[i]);
           }
         }
-      }
 
-      // Return early if we are out of range of all active walkies
-      if (!isAnyWalkieInRange) {
-        return;
+        bool isAnyWalkieInRange = walkieTalkiesInRange.Count > 0;
+
+        // If the player is going in or out of range of an active walkie
+        if (isAnyWalkieInRange != __instance.holdingWalkieTalkie) {
+          // Set the holdingWalkieTalkie bool to true if the player is within range of an active walkie
+          ___holdingWalkieTalkie = isAnyWalkieInRange;
+          
+          // Immediately stop audio from walkies that are out of range
+          for (int i = 0; i < walkieTalkiesOutOfRange.Count; i++)
+          {
+            if (i < walkieTalkiesInRange.Count) {
+              walkieTalkiesOutOfRange[i].thisAudio.Stop();
+            }
+          }
+        }
+
+        // Return early if we are out of range of all active walkies
+        if (!isAnyWalkieInRange) {
+          return;
+        }
       }
 
       // Get the local player controller (or the spectated player controller) as the listener
@@ -92,17 +91,17 @@ namespace LCAlwaysHearWalkieMod.Patches
 
       for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
       {
+        PlayerControllerB otherPlayerController = StartOfRound.Instance.allPlayerScripts[i];
+
         // Return if the player is not controlled by a player or is dead or if its the local player controller
         if (
-          (!StartOfRound.Instance.allPlayerScripts[i].isPlayerControlled && !StartOfRound.Instance.allPlayerScripts[i].isPlayerDead)
-          || StartOfRound.Instance.allPlayerScripts[i] == GameNetworkManager.Instance.localPlayerController
-          || StartOfRound.Instance.allPlayerScripts[i].isPlayerDead
+          (!otherPlayerController.isPlayerControlled && !otherPlayerController.isPlayerDead)
+          || otherPlayerController == GameNetworkManager.Instance.localPlayerController
+          || otherPlayerController.isPlayerDead
         )
         {
           continue;
         }
-
-        PlayerControllerB otherPlayerController = StartOfRound.Instance.allPlayerScripts[i];
 
         // In PlayerControllerBPatch we set the holdingWalkieTalkie bool to true if the player is within range of an active walkie instead of actively holding one
         bool isOtherPlayerNearActiveWalkie = otherPlayerController.holdingWalkieTalkie;
@@ -128,7 +127,6 @@ namespace LCAlwaysHearWalkieMod.Patches
               distanceLocalPlayerToClosestWalkie = distanceLocalToWalkie;
             }
 
-
             // Only if walkie is being spoken into, get the distance from the other player to the closest active walkie
             if (!WalkieTalkie.allWalkieTalkies[j].speakingIntoWalkieTalkie)
             {
@@ -151,8 +149,58 @@ namespace LCAlwaysHearWalkieMod.Patches
 
           // Set the volume of the other player to the louder of the two volumes
           otherPlayerController.voicePlayerState.Volume = Mathf.Max(playerVolumeByWalkieTalkieDistance, playerVolumeBySpatialDistance);
+
+          // Set audio effect based on which volume "source" is louder but only if the other player is actively speaking into a walkie
+          if (otherPlayerController.speakingToWalkieTalkie && playerVolumeByWalkieTalkieDistance > playerVolumeBySpatialDistance)
+          {
+            makePlayerSoundWalkieTalkie(otherPlayerController);
+          }
+          else
+          {
+            makePlayerSoundSpatial(otherPlayerController);
+          }
         }
       }
+    }
+
+    static void makePlayerSoundWalkieTalkie(PlayerControllerB playerController)
+    {
+      AudioSource currentVoiceChatAudioSource = playerController.currentVoiceChatAudioSource;
+      AudioLowPassFilter lowPass = currentVoiceChatAudioSource.GetComponent<AudioLowPassFilter>();
+      AudioHighPassFilter highPass = currentVoiceChatAudioSource.GetComponent<AudioHighPassFilter>();
+      OccludeAudio occludeAudio = currentVoiceChatAudioSource.GetComponent<OccludeAudio>();
+
+      highPass.enabled = true;
+      lowPass.enabled = true;
+      occludeAudio.overridingLowPass = true;
+
+      currentVoiceChatAudioSource.spatialBlend = 0f;
+      playerController.currentVoiceChatIngameSettings.set2D = true;
+      currentVoiceChatAudioSource.outputAudioMixerGroup = SoundManager.Instance.playerVoiceMixers[playerController.playerClientId];
+      currentVoiceChatAudioSource.bypassListenerEffects = false;
+      currentVoiceChatAudioSource.bypassEffects = false;
+      currentVoiceChatAudioSource.panStereo = GameNetworkManager.Instance.localPlayerController.isPlayerDead ? 0f : 0.4f;
+      occludeAudio.lowPassOverride = 4000f;
+      lowPass.lowpassResonanceQ = 3f;
+    }
+
+    static void makePlayerSoundSpatial(PlayerControllerB playerController)
+    {
+      AudioSource currentVoiceChatAudioSource = playerController.currentVoiceChatAudioSource;
+      AudioLowPassFilter lowPass = currentVoiceChatAudioSource.GetComponent<AudioLowPassFilter>();
+      AudioHighPassFilter highPass = currentVoiceChatAudioSource.GetComponent<AudioHighPassFilter>();
+      OccludeAudio occludeAudio = currentVoiceChatAudioSource.GetComponent<OccludeAudio>();
+
+      highPass.enabled = false;
+      lowPass.enabled = true;
+      occludeAudio.overridingLowPass = playerController.voiceMuffledByEnemy;
+
+      currentVoiceChatAudioSource.spatialBlend = 1f;
+      playerController.currentVoiceChatIngameSettings.set2D = false;
+      currentVoiceChatAudioSource.bypassListenerEffects = false;
+      currentVoiceChatAudioSource.bypassEffects = false;
+      currentVoiceChatAudioSource.outputAudioMixerGroup = SoundManager.Instance.playerVoiceMixers[playerController.playerClientId];
+      lowPass.lowpassResonanceQ = 1f;
     }
   }
 }
