@@ -28,7 +28,7 @@ namespace BepInEx5.PluginTemplate
             Log.LogInfo("/|\\");
             Log.LogInfo(" |----|");
             Log.LogInfo(" |[__]| Always Hear Active Walkies");
-           Log.LogInfo($" |.  .| Version {modVersion} Loaded");
+            Log.LogInfo($" |.  .| Version {modVersion} Loaded");
             Log.LogInfo(" |____|");
 
             harmony.PatchAll(typeof(LCAlwaysHearWalkieMod));
