@@ -1,3 +1,7 @@
+# 1.4.4
+- Made distance values configurable
+- Lowered the max distance at which a walkie talkie can be heard 
+
 # 1.4.3
 - Adjust player sound effects based on. louder of two audio "sources"
   - This should result in only applying the walkie talkie sound effect to a player's voice if the walkie talkie sound would be louder than the spatial audio sound of the player.
