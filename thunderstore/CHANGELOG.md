@@ -1,3 +1,8 @@
+# 1.4.5
+- Fixed bug causing walkie talkies to transmit when button is not held
+- Increased spatial audio sound max when using active walkies but standing next to other players
+- Fixed bug causing nearby players to use spatial audio instead of walkie talkie effect when near another active walkie.
+
 # 1.4.4
 - Made distance values configurable
 - Lowered the max distance at which a walkie talkie can be heard 

@@ -93,7 +93,10 @@ internal class PlayerControllerBPatch
         {
             PlayerControllerB otherPlayerController = StartOfRound.Instance.allPlayerScripts[i];
 
-            // Return if the player is not controlled by a player or is dead or if its the local player controller
+            // Return if:
+                // the player is not controlled by a player
+                // The player is dead 
+                // The other player controller is the local player controller
             if (
                 (!otherPlayerController.isPlayerControlled && !otherPlayerController.isPlayerDead)
                 || otherPlayerController == GameNetworkManager.Instance.localPlayerController
@@ -109,49 +112,56 @@ internal class PlayerControllerBPatch
             if (isOtherPlayerNearActiveWalkie)
             {
                 float distanceLocalPlayerToOtherPlayer = Vector3.Distance(localOrSpectatedPlayerController.transform.position, otherPlayerController.transform.position);
-                float distanceOtherPlayerToClosestWalkie = float.MaxValue;
                 float distanceLocalPlayerToClosestWalkie = float.MaxValue;
+                float distanceOtherPlayerToClosestWalkie = float.MaxValue;
 
                 for (int j = 0; j < WalkieTalkie.allWalkieTalkies.Count; j++)
                 {
-                    // If walkie talkie is not being used skip it.
-                    if (!WalkieTalkie.allWalkieTalkies[j].isBeingUsed)
+                    // Get current walkie talkie
+                    WalkieTalkie currentWalkieTalkie = WalkieTalkie.allWalkieTalkies[j];
+
+                    // If walkie is not being used (Powered Off), skip it
+                    if (!currentWalkieTalkie.isBeingUsed)
                     {
                         continue;
                     }
 
                     // Get the distance from the local player to the closest active walkie
-                    float distanceLocalToWalkie = Vector3.Distance(WalkieTalkie.allWalkieTalkies[j].target.transform.position, localOrSpectatedPlayerController.transform.position);
+                    float distanceLocalToWalkie = Vector3.Distance(currentWalkieTalkie.target.transform.position, localOrSpectatedPlayerController.transform.position);
                     if (distanceLocalToWalkie < distanceLocalPlayerToClosestWalkie)
                     {
                         distanceLocalPlayerToClosestWalkie = distanceLocalToWalkie;
                     }
 
-                    // Only if walkie is being spoken into, get the distance from the other player to the closest active walkie
-                    if (!WalkieTalkie.allWalkieTalkies[j].speakingIntoWalkieTalkie)
+                    // If walkie is not held or player holding walkie is not speaking into walkie talkie, skip it
+                    if (
+                        !currentWalkieTalkie.playerHeldBy
+                        || (currentWalkieTalkie.playerHeldBy && !currentWalkieTalkie.playerHeldBy.speakingToWalkieTalkie)
+                    )
                     {
-                        float distanceOtherToWalkie = Vector3.Distance(WalkieTalkie.allWalkieTalkies[j].transform.position, otherPlayerController.transform.position);
-                        if (distanceOtherToWalkie < distanceOtherPlayerToClosestWalkie)
-                        {
-                            distanceOtherPlayerToClosestWalkie = distanceOtherToWalkie;
-                        }
+                        continue;
+                    }
+
+                    // Get the distance from the other player to the closest active walkie
+                    float distanceOtherToWalkie = Vector3.Distance(currentWalkieTalkie.transform.position, otherPlayerController.transform.position);
+                    if (distanceOtherToWalkie < distanceOtherPlayerToClosestWalkie)
+                    {
+                        distanceOtherPlayerToClosestWalkie = distanceOtherToWalkie;
                     }
                 }
+                
+                float normalizedOtherWalkieTalkieDistance = 1f - Mathf.InverseLerp(AverageDistanceToHeldWalkie, WalkieRecordingRange, distanceOtherPlayerToClosestWalkie);
+                float normalizedLocalClosestValue =  1f - Mathf.InverseLerp(AverageDistanceToHeldWalkie, WalkieRecordingRange, distanceLocalPlayerToClosestWalkie);
+                float playerVolumeByWalkieTalkieDistance = Mathf.Clamp01(1f + (normalizedOtherWalkieTalkieDistance - normalizedLocalClosestValue));
 
-                // Derive the volume for the other player based on the distance of both players to their closest active walkie
-                float playerVolumeByWalkieTalkieDistance = Mathf.Min(
-                    1f - Mathf.InverseLerp(AverageDistanceToHeldWalkie, WalkieRecordingRange, distanceOtherPlayerToClosestWalkie),
-                    1f - Mathf.InverseLerp(AverageDistanceToHeldWalkie, WalkieRecordingRange, distanceLocalPlayerToClosestWalkie)
-                );
-
-                // Derive the volume for the other player based on the distance of the local player to the other player
-                float playerVolumeBySpatialDistance = 1f - Mathf.InverseLerp(0f, PlayerToPlayerSpatialHearingRange, distanceLocalPlayerToOtherPlayer);
+                // Derive the spatial volume for the other player based on the distance of the local player to the other player
+                float playerVolumeBySpatialDistance = 1f - Mathf.InverseLerp(1f, PlayerToPlayerSpatialHearingRange, distanceLocalPlayerToOtherPlayer);
 
                 // Set the volume of the other player to the louder of the two volumes
                 otherPlayerController.voicePlayerState.Volume = Mathf.Max(playerVolumeByWalkieTalkieDistance, playerVolumeBySpatialDistance);
 
-                // Set audio effect based on which volume "source" is louder but only if the other player is actively speaking into a walkie
-                if (otherPlayerController.speakingToWalkieTalkie && playerVolumeByWalkieTalkieDistance > playerVolumeBySpatialDistance)
+                // Set audio effect based on which volume "source" is louder
+                if (playerVolumeByWalkieTalkieDistance > playerVolumeBySpatialDistance)
                 {
                     makePlayerSoundWalkieTalkie(otherPlayerController);
                 }

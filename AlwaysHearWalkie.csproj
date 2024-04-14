@@ -3,7 +3,7 @@
         <TargetFramework>netstandard2.1</TargetFramework>
         <AssemblyName>AlwaysHearWalkie</AssemblyName>
         <Product>Always Hear Active Walkies</Product>
-        <Version>1.4.4</Version>
+        <Version>1.4.5</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
         <RestoreAdditionalProjectSources>https://api.nuget.org/v3/index.json;
